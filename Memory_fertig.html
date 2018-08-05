@@ -1,0 +1,199 @@
+﻿<!doctype html>
+<html>
+<head>
+
+	<title>Memory</title>
+	<meta charset="utf-8">
+
+	<script src="wifi.funktionen.js"></script>
+	<script>
+
+	var spieler=1, geklickt=0;
+	var karte1, karte2;
+	var punkteSpieler1=0, punkteSpieler2=0;
+	var done;
+
+	function close() {
+
+
+		karte1.className = 'hidden';
+		karte2.className = 'hidden';
+		done = 1;
+	}
+
+
+	function shuffle(unshuffled) {
+
+		var shuffled = new Array(unshuffled.length);
+		var remainingElements = unshuffled.length;
+		var randomIndex;
+
+		for(var i = 0; i<shuffled.length; i++) {
+			randomIndex = Math.floor(Math.random()*remainingElements);
+			shuffled[i] = unshuffled[randomIndex];
+			unshuffled.splice(randomIndex,1);
+			remainingElements -= 1;
+		}
+		return shuffled;
+	}
+
+	var zahlAnklicken = function() {
+
+		if ( this.className == 'hidden' && done == 1 ) {
+
+			this.className = 'aktiv';
+			geklickt++;
+
+			if(geklickt == 1)
+				karte1 = this;
+
+			if(geklickt == 2) {
+
+				karte2 = this;
+
+				if (karte1.textContent == karte2.textContent) {
+
+					if(spieler == 1)
+						punkteSpieler1++;
+					else
+						punkteSpieler2++;
+				}
+
+				else {
+
+					if(spieler == 1)
+						spieler = 2;
+					else
+						spieler = 1;
+
+				}
+
+				geklickt = 0;
+
+
+				if(karte1.textContent != karte2.textContent) {
+					done = 0;
+					setTimeout(close, 1500);
+				}
+
+
+				console.log(punkteSpieler1, punkteSpieler2);
+
+			}
+
+			document.getElementById('punkteeins').innerHTML = 'Spieler 1 hat <b>'+punkteSpieler1+ ' Punkte.<b></b>';
+			document.getElementById('punktezwei').innerHTML = 'Spieler 2 hat <b>'+punkteSpieler2+ ' Punkte.<b></b>';
+			document.getElementById('spieler').innerHTML = 'Spieler ' + spieler + ' ist an der Reihe.<b></b>';
+
+			if (punkteSpieler1+punkteSpieler2 == 10) {
+				if (punkteSpieler1>punkteSpieler2)
+					alert("Spieler 1 hat gewonnen")
+				else if (punkteSpieler2>punkteSpieler1)
+					alert("Spieler 2 hat gewonnen")
+				else
+					alert("Unentschieden")
+
+			}
+		}
+	}
+
+
+	window.onload = function() {
+		var erzeugeTabelle = function() {
+		var tabelle, body, zeile, div, i=0;
+		done = 1;
+		var tiere = [
+			['Hund'],
+			['Katze'],
+			['Schlange'],
+			['Löwe'],
+			['Maus'],
+			['Käfer'],
+			['Ameise'],
+			['Pferd'],
+	    		['Kuh'],
+	    		['Schaf'],
+			['Hund'],
+			['Katze'],
+			['Schlange'],
+			['Löwe'],
+			['Maus'],
+			['Käfer'],
+			['Ameise'],
+			['Pferd'],
+	    		['Kuh'],
+	    		['Schaf']
+			];
+
+			for(var i=0; i<20; i++)
+         tiere[i+20] = tiere[i];
+
+		tiere = shuffle(tiere);
+
+		body = document.getElementsByTagName( 'body' )[0]; // body existiert bereits im DOM
+	// Tabelle
+	game = document.createElement( 'table' );
+	game.setAttribute( 'border', 1);
+	body.appendChild( game );
+	for ( i=1; i<=tiere.length; i++) {
+		if ( i%5 == 1 ) {
+			// Zeile
+			zeile = document.createElement( 'tr' );
+			game.appendChild( zeile );
+		}
+		div = document.createElement( 'td' );
+		div.innerHTML = tiere[i-1];
+		div.classList.add("hidden");
+		div.onclick = zahlAnklicken;
+		//zelle.addEventListener("click", handleClick);
+		//zelle.classList.add("pic");
+		zeile.appendChild( div );
+	} // for
+ // erzeuge Tabelle
+	console.log(tiere)
+
+	document.getElementById('punkteeins').innerHTML = 'Spieler 1 hat <b>'+punkteSpieler1+ ' Punkte.<b></b>';
+	document.getElementById('punktezwei').innerHTML = 'Spieler 2 hat <b>'+punkteSpieler2+ ' Punkte.<b></b>';
+	document.getElementById('spieler').innerHTML = 'Spieler ' + spieler + ' ist an der Reihe.<b></b>';
+}
+
+	erzeugeTabelle();
+/*	el( 'start' ).onclick = function() {
+		if ( geklickt == 6 ) {
+		}
+	}*/
+} // onload
+	</script>
+	<style>
+td {
+		width:100px;
+		height:60px;
+		text-align:center;
+		font-size:15px;
+		cursor:pointer;
+		transition:background 2s;
+		-webkit-user-select: none;
+		-ms-user-select: none;
+		-moz-user-select: none;
+ 		user-select: none;
+	}
+	.hidden{
+		opacity: 1;
+		background: rgb(60, 60,60);
+		color: rgb(60,60,60);
+	}
+	.aktiv {
+		background:green;
+		color:#fff;
+	}
+	#game { width:600px; border:1px solid #000; padding:1px; background:#ddd; font-family:Arial; }
+	</style>
+</head>
+<body>
+	<div id="game">
+	<div id="punkteeins"></div>
+	<div id="punktezwei"></div>
+	<div id="spieler"></div>
+</div>
+</body>
+</html>
